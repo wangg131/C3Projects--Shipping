@@ -1,3 +1,4 @@
+require 'active_shipping'
 class Shipment < ActiveRecord::Base
   validates :name, presence: true
   validates :country, presence: true
@@ -11,7 +12,7 @@ class Shipment < ActiveRecord::Base
   end
 
   def destination
-    Location.new(country: "US", state: state, city: city, postal_code: postal_code)
+    Shipment.new(country: "US", state: state, city: city, postal_code: postal_code)
   end
 
 end

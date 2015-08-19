@@ -22,15 +22,16 @@ class ApplicationController < ActionController::Base
   end
 
   def estimate_request
-    @shipment = params[:estimate_request]
+    @betsy_shipping = params[:estimate_request]
     origin
     destination
     package
-  ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"], :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"], :key => ENV["ACTIVESHIPPING_UPS_KEY"])
-  ups_response = ups.find_rates(@origin, @destination, @package)
-  ups_rates = response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
+    ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"], :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"], :key => ENV["ACTIVESHIPPING_UPS_KEY"])
 
-  render json: ups_rates.as_json
-    # render json: request.body.read
+    ups_response = ups.find_rates(@origin, @destination, @package)
+
+    ups_rates = ups_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
+
+    render json: ups_rates.as_json
   end
 end

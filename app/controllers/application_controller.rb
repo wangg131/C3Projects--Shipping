@@ -8,11 +8,10 @@ class ApplicationController < ActionController::Base
   end
 
   def estimate_request
-    raise
     package = ActiveShipping::Package.new( 7.5 * 16,             # 7.5 lbs, times 16 oz/lb.
                                           [15, 10, 4.5],        # 15x10x4.5 inches
                                           :units => :imperial)  # not grams, not centimetres
 
-    render json: package
+    render json: request.body.read
   end
 end

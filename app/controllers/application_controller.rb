@@ -27,11 +27,10 @@ class ApplicationController < ActionController::Base
     destination
     package
   ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"], :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"], :key => ENV["ACTIVESHIPPING_UPS_KEY"])
-    binding.pry
   ups_response = ups.find_rates(@origin, @destination, @package)
+  ups_rates = response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
 
-
-  render json: ups_response.as_json
+  render json: ups_rates.as_json
     # render json: request.body.read
   end
 end

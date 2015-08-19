@@ -8,21 +8,22 @@ class ApplicationController < ActionController::Base
   end
 
   def destination
-    # country = @shipment.country
-    # city = @shipment.city
-    # state = @shipment.state
-    # zip = @shipment.zip
-    @destination = ActiveShipping::Location.new(country:"US", state: "MT", city: "Boise", zip: "59001")
+    country = @betsy_shipping["country"]
+    city = @betsy_shipping["city"]
+    state = @betsy_shipping["state"]
+    zip = @betsy_shipping["zip"]
+    @destination = ActiveShipping::Location.new(country: country, state: state, city: city, zip: zip)
+    # @destination = ActiveShipping::Location.new(country:"US", state: "MT", city: "Boise", zip: "59001")
   end
 
   def package
-    @package = ActiveShipping::Package.new( 7.5 * 16,             # 7.5 lbs, times 16 oz/lb.
+    @package = ActiveShipping::Package.new( @betsy_shipping["total_weight"].to_i,             # 7.5 lbs, times 16 oz/lb.
                                           [15, 10, 4.5],        # 15x10x4.5 inches
                                           :units => :imperial)  # not grams, not centimetres
   end
 
   def estimate_request
-    @betsy_shipping = params[:estimate_request]
+    @betsy_shipping = params
     origin
     destination
     package

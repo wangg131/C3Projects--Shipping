@@ -24,7 +24,6 @@ class ApplicationController < ActionController::Base
     else
       @box_size = [8, 8, 8]
     end
-
     @package = ActiveShipping::Package.new(@betsy_shipping["total_weight"].to_i, @box_size, :units => :imperial)
   end
 

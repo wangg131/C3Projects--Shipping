@@ -35,7 +35,6 @@ RSpec.describe ApplicationController, type: :controller do
     before :each do
       @origin = ActiveShipping::Location.new(country: "US", state: "WA", city: "Seattle", zip: "98109")
       VCR.use_cassette 'package_create_response' do
-      binding.pry
         get :estimate_request, { destination: attributes_for(:destination)}, @origin
       end
     end

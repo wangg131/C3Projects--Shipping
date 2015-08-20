@@ -33,7 +33,7 @@ class PackagesController < ApplicationController
                                             @box_size, :units => :imperial)
   end
 
-  def estimate_request
+  def estimate_request # api endpoint
     @betsy_shipping = params
     origin
     destination
@@ -52,6 +52,7 @@ class PackagesController < ApplicationController
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
     render json: carrier_rates.as_json
+                                  binding.pry
 
   end
 

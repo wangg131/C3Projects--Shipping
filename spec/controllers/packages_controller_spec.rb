@@ -43,8 +43,8 @@ RSpec.describe PackagesController, type: :controller do
       end
     end
 
-    it "returns all carrier options" do
-      VCR.use_cassette 'controller/carriers' do
+    it "returns all carrier rates" do
+      VCR.use_cassette 'carriers' do
         carrier_rates = (controller.send(:estimate_request))
         expect(carrier_rates).to include("")
       end

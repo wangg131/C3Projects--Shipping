@@ -52,7 +52,7 @@ class PackagesController < ApplicationController
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
     render json: carrier_rates.as_json
-                                  binding.pry
+                                  
 
   end
 

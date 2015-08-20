@@ -42,7 +42,6 @@ class ApplicationController < ActionController::Base
     usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
-binding.pry
     render json: carrier_rates.as_json
   end
 end

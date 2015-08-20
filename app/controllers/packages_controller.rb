@@ -56,8 +56,8 @@ class PackagesController < ApplicationController
   end
 
   def save
-    weight = params["order"]["total_weight"]
-    sizing = 
+    weight = params["order"]["estimate"]["total_weight"]
+    sizing = params["order"]["estimate"]["box_size"]
     order_id = params["id"]
 
     Package.create(weight: weight, sizing: sizing, order_id: order_id)

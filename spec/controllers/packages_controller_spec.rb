@@ -4,7 +4,6 @@ require 'support/vcr_setup'
 RSpec.describe PackagesController, type: :controller do
 
   describe "get estimate_request" do
-    let(:package1) { Package.create weight: 12.0}
 
     it 'is successful' do
       VCR.use_cassette 'package_create_response' do
@@ -17,15 +16,21 @@ RSpec.describe PackagesController, type: :controller do
   describe "parses the betsy shipping request" do
 
     it "creates an origin object" do
-      expect(controller.send(:origin)).to be_an_instance_of ActiveShipping::Location
+      VCR.use_cassette 'package' do
+        expect(controller.send(:origin)).to be_an_instance_of ActiveShipping::Location
+      end
     end
 
     it "creates a destination object" do
-      expect(controller.send(:destination)).to be_an_instance_of ActiveShipping::Location
+      VCR.use_cassette 'package' do
+        expect(controller.send(:destination)).to be_an_instance_of ActiveShipping::Location
+      end
     end
 
     it "creates a package object" do
-      expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
+      VCR.use_cassette 'package' do
+        expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
+      end
     end
   end
 

@@ -43,16 +43,16 @@ class PackagesController < ApplicationController
                                   :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
                                   :key => ENV["ACTIVESHIPPING_UPS_KEY"])
     ups_response = ups.find_rates(@origin, @destination, @package)
-    ups_rates = ups_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price, rate.delivery_date]}
+    ups_rates = ups_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
 
     usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
     usps_response = usps.find_rates(@origin, @destination, @package)
-    usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price, rate.delivery_date]}
+    usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
 
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
     render json: carrier_rates.as_json
-                                  
+
 
   end
 

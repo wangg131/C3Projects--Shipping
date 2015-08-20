@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818231217) do
+ActiveRecord::Schema.define(version: 20150820221032) do
 
   create_table "destinations", force: :cascade do |t|
     t.string   "street"
@@ -25,10 +25,11 @@ ActiveRecord::Schema.define(version: 20150818231217) do
 
   create_table "packages", force: :cascade do |t|
     t.float    "weight"
-    t.float    "height"
-    t.float    "width"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "dimensions"
+    t.string   "sizing"
+    t.integer  "order_id"
   end
 
   create_table "shipments", force: :cascade do |t|

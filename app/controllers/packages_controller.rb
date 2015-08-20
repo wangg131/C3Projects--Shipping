@@ -53,6 +53,16 @@ class PackagesController < ApplicationController
     carrier_rates.push(ups_rates, usps_rates)
     render json: carrier_rates.as_json
 
+  end
+
+  def save
+    weight = params["order"]["total_weight"]
+    sizing = 
+    order_id = params["id"]
+
+    Package.create(weight: weight, sizing: sizing, order_id: order_id)
+
+
 
   end
 

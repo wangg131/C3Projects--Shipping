@@ -25,15 +25,11 @@ class ApplicationController < ActionController::Base
       @box_size = [8, 8, 8]
     end
 
-    @package = ActiveShipping::Package.new(
-    @betsy_shipping["total_weight"].to_i,
-    @box_size,
-    :units => :imperial)
+    @package = ActiveShipping::Package.new(@betsy_shipping["total_weight"].to_i, @box_size, :units => :imperial)
   end
 
   def estimate_request
     @betsy_shipping = params
-    binding.pry
     origin
     destination
     package
@@ -46,7 +42,7 @@ class ApplicationController < ActionController::Base
     usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
-
+binding.pry
     render json: carrier_rates.as_json
   end
 end

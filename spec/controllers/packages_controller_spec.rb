@@ -4,11 +4,10 @@ require 'support/vcr_setup'
 RSpec.describe PackagesController, type: :controller do
 
   describe "get estimate_request" do
-    let(:package1) { Package.create weight: 12.0}
 
     it 'is successful' do
       VCR.use_cassette 'package_create_response' do
-        get :estimate_request, origin: {:city =>"Seattle", :state =>"WA", :zip =>"98109", :country =>"US"}, destination: {:city =>"Burlington", :state =>"WA", :zip =>"98233", :country => "US"}, package: {:weight => 12.0}
+        get :estimate_request, origin: {:city =>"Seattle", :state =>"WA", :zip =>"98109", :country =>"US"}, destination: {:city =>"Burlington", :state =>"WA", :zip =>"98233", :country => "US"}, package: {:weight => 12.0 }
         expect(response.response_code).to eq 200
       end
     end

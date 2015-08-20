@@ -8,10 +8,10 @@ class PackagesController < ApplicationController
   end
 
   def destination
-    country = @betsy_shipping["country"]
-    city = @betsy_shipping["city"]
-    state = @betsy_shipping["state"]
-    zip = @betsy_shipping["zip"]
+    country = @betsy_shipping["destination"]["country"]
+    city = @betsy_shipping["desintation"]["city"]
+    state = @betsy_shipping["desintation"]["state"]
+    zip = @betsy_shipping["desintation"]["zip"]
 
     @destination = ActiveShipping::Location.new(country: country,
                                                 state: state,
@@ -39,6 +39,8 @@ class PackagesController < ApplicationController
     destination
     package
 
+    binding.pry
+
     ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"],
                                   :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
                                   :key => ENV["ACTIVESHIPPING_UPS_KEY"])
@@ -48,11 +50,9 @@ class PackagesController < ApplicationController
     usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
     usps_response = usps.find_rates(@origin, @destination, @package)
     usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price, rate.delivery_date]}
-
     carrier_rates = []
     carrier_rates.push(ups_rates, usps_rates)
     render json: carrier_rates.as_json
-                                  binding.pry
 
   end
 

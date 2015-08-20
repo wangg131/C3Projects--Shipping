@@ -1,5 +1,5 @@
 class Destination < ActiveRecord::Base
-  validates :street, presence: true
+  # validates :street, presence: true
   validates :country, presence: true
   validates :city, presence: true
   validates :state, presence: true

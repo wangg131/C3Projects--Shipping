@@ -3,11 +3,19 @@ FactoryGirl.define do
     weight 22.0
   end
 
+  factory :origin do
+    street "123 St"
+    country "US"
+    city "Seattle"
+    state "WA"
+    zip "98109"
+  end
+
   factory :destination do
-    street
-    country
-    city
-    state
-    zip
+    street "456 St"
+    country "US"
+    city "Burlington"
+    state "WA"
+    zip "98233"
   end
 end

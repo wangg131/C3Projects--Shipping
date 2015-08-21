@@ -55,4 +55,12 @@ RSpec.describe PackagesController, type: :controller do
       expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
     end
   end
+
+  describe "packages#save" do
+    it "saves a record of the shipping information" do
+      let(:params) {
+        { zip: "98101", city: "Seattle", state: "WA", country: "US", box_size: "medium", total_weight: 12.0, order_id: 1, price: 789, controller: "packages", action: "save"}
+        }
+    end
+  end
 end

@@ -24,10 +24,9 @@ class PackagesController < ApplicationController
        error_json = { message: error.message }
        render json: error_json.as_json, response_code: 400
       end
-    end
+  end
 
   def save
-    binding.pry
     service_array = params["order"]["estimate"]["service"].split(" ")
     price = service_array.pop.to_f
     service_type = service_array.join(" ")

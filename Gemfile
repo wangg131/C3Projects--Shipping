@@ -37,33 +37,32 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
-if RUBY_PLATFORM =~ /darwin/
-  group :test do
-    gem 'webmock'
-  end
 
-  group :development, :test do
-    gem 'sqlite3'
+group :test do
+  gem 'webmock'
+end
 
-    gem 'pry-rails'
+group :development, :test do
+  gem 'sqlite3'
 
-    gem 'rspec-rails'
+  gem 'pry-rails'
 
-    gem 'factory_girl_rails', '~>4.0'
+  gem 'rspec-rails'
 
-    gem 'simplecov', require: false
+  gem 'factory_girl_rails', '~>4.0'
 
-    # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-    gem 'byebug'
+  gem 'simplecov', require: false
 
-    # Access an IRB console on exception pages or by using <%= console %> in views
-    gem 'web-console', '~> 2.0'
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
 
-    # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-    gem 'spring'
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
 
-    gem 'vcr'
-  end
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+
+  gem 'vcr'
 end
 
 group :production do

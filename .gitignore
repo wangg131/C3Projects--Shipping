@@ -17,6 +17,7 @@
 /tmp
 coverage
 .env
+.DS_Store
 
 # Ignore vcr spec directory because it contains SECRETS!
 spec/vcr/*

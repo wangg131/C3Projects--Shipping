@@ -4,4 +4,5 @@ class Package < ActiveRecord::Base
   validates :order_id, presence: true
   validates :price, presence: true
   validates :service_type, presence: true
+
 end

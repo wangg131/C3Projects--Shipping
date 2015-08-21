@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :destinations
-  resources :packages
 
   get '/' => 'packages#estimate_request'
   patch '/save' => 'packages#save'

@@ -11,38 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820234102) do
-
-  create_table "destinations", force: :cascade do |t|
-    t.string   "street"
-    t.string   "city"
-    t.string   "country"
-    t.string   "state"
-    t.string   "zip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+ActiveRecord::Schema.define(version: 20150821031422) do
 
   create_table "packages", force: :cascade do |t|
     t.float    "weight"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
-    t.integer  "dimensions"
     t.string   "sizing"
     t.integer  "order_id"
     t.float    "price"
     t.string   "service_type"
-  end
-
-  create_table "shipments", force: :cascade do |t|
-    t.string   "name"
-    t.string   "country"
-    t.string   "city"
-    t.string   "state"
-    t.string   "postal_code"
-    t.float    "weight"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
   end
 
 end

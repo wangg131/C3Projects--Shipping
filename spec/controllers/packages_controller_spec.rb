@@ -79,5 +79,11 @@ RSpec.describe PackagesController, type: :controller do
       end
     end
 
+  describe "packages#save" do
+    it "saves a record of the shipping information" do
+      Package.create(weight: 29.5, sizing: "[12, 5, 4]", order_id: 1, service_type: "Bike delivery", price: 674)
+      expect(Package.count).to eq(1)
+      end
+    end
   end
 end

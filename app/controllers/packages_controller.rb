@@ -43,23 +43,23 @@ class PackagesController < ApplicationController
     destination
     package
 
-    ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"],
-                                  :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
-                                  :key => ENV["ACTIVESHIPPING_UPS_KEY"])
-    ups_response = ups.find_rates(@origin, @destination, @package)
-    ups_rates = ups_response.rates.sort_by(&:price).collect { |rate| [rate.service_name, rate.price, rate.delivery_date] }
+    begin
+      ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"],
+                                    :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
+                                    :key => ENV["ACTIVESHIPPING_UPS_KEY"])
+      ups_response = ups.find_rates(@origin, @destination, @package)
+      ups_rates = ups_response.rates.sort_by(&:price).collect { |rate| [rate.service_name, rate.price, rate.delivery_date] }
+      usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
+      usps_response = usps.find_rates(@origin, @destination, @package)
+      usps_rates = usps_response.rates.sort_by(&:price).collect { |rate| [rate.service_name, rate.price] }
 
-    usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
-    usps_response = usps.find_rates(@origin, @destination, @package)
-    usps_rates = usps_response.rates.sort_by(&:price).collect { |rate| [rate.service_name, rate.price] }
-    carrier_rates = []
-    carrier_rates.push(ups_rates, usps_rates)
-    if carrier_rates
+      carrier_rates = []
+      carrier_rates.push(ups_rates, usps_rates)
       render json: carrier_rates.as_json
-    else
-      render json: [], status: 204
+    rescue ActiveShipping::ResponseError => error
+     error_json = { message: error.message }
+     render json: error_json.as_json, response_code: 400
     end
-
   end
 
   def save

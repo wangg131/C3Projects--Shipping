@@ -8,13 +8,13 @@ RSpec.describe PackagesController, type: :controller do
     let(:json) { JSON.parse(response.body) }
 
     context "valid params" do
-      let(:betsy_shipping) {
+      let(:params) {
         { zip: "98101", city: "Seattle", state: "WA", country: "US", box_size: "medium", total_weight: "12.0", controller: "packages", action: "estimate_request"}
         }
 
       before :each do
         VCR.use_cassette 'delete' do
-          get :estimate_request, betsy_shipping
+          get :estimate_request, params
         end
       end
 
@@ -33,17 +33,13 @@ RSpec.describe PackagesController, type: :controller do
   end
 
   describe "parses the betsy shipping request" do
-    let(:betsy_shipping) {
-      {
-        origin: { zip: "98101", city: "Seattle", state: "WA", country: "US"},
-        destination: { city: "Burlington", state: "WA", zip: "98233", country: "USA" },
-        package: {:weight => 12, :sizing => "[8,8,8]"}
-        }
+    let(:params) {
+      { zip: "98101", city: "Seattle", state: "WA", country: "US", box_size: "medium", total_weight: "12.0", controller: "packages", action: "estimate_request"}
       }
 
     before :each do
       VCR.use_cassette 'delete' do
-        get :estimate_request, betsy_shipping
+        get :estimate_request, params
       end
     end
 
@@ -52,32 +48,12 @@ RSpec.describe PackagesController, type: :controller do
     end
 
     it "creates a destination object" do
-      VCR.use_cassette 'package_create_response' do
-        get :estimate_request, origin: { :city =>"Seattle", :state =>"WA", :zip=>98109, :country =>"US"}, destination: {:city =>"Burlington",:state =>"WA",:zip =>98233,:country => "US"},package: {:weight => 12,:sizing => "[8,8,8]"}
-        end
-        expect(controller.send(:destination)).to be_an_instance_of ActiveShipping::Location
+      expect(controller.send(:destination)).to be_an_instance_of ActiveShipping::Location
     end
 
     it "creates a package object" do
-      VCR.use_cassette 'package' do
-        expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
-      end
+      expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
     end
   end
 
-  describe "get carrier quote" do
-
-    it "creates UPS instances" do
-      VCR.use_cassette 'ups' do
-        expect(controller.send(:estimate_request)).to include(ActiveShipping::UPS)
-      end
-    end
-
-    it "creates USPS instances" do
-      VCR.use_cassette'usps' do
-        expect(controller.send(:estimate_request)).to include(ActiveShipping::USPS)
-      end
-    end
-
-  end
 end

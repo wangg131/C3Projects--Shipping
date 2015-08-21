@@ -55,5 +55,4 @@ RSpec.describe PackagesController, type: :controller do
       expect(controller.send(:package)).to be_an_instance_of ActiveShipping::Package
     end
   end
-
 end

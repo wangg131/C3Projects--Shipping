@@ -1,4 +1,5 @@
 class PackagesController < ApplicationController
+  skip_before_filter :verify_authenticity_token, only: [:save]
 
   def origin
     @origin = ActiveShipping::Location.new(country: "US",
@@ -21,6 +22,12 @@ class PackagesController < ApplicationController
 
   def package
     @box_size = @betsy_shipping["box_size"]
+    set_box_size
+    @package = ActiveShipping::Package.new(@betsy_shipping["total_weight"].to_i,
+                                            @box_size, :units => :imperial)
+  end
+
+  def set_box_size
     if @box_size == "large"
       @box_size = [16, 12, 8]
     elsif @box_size == "medium"
@@ -28,11 +35,7 @@ class PackagesController < ApplicationController
     else
       @box_size = [8, 8, 8]
     end
-
-    @package = ActiveShipping::Package.new(@betsy_shipping["total_weight"].to_i,
-                                            @box_size, :units => :imperial)
   end
-
   def estimate_request # api endpoint
     @betsy_shipping = params
     origin
@@ -56,15 +59,13 @@ class PackagesController < ApplicationController
   end
 
   def save
-    weight = params["order"]["estimate"]["total_weight"]
-    sizing = params["order"]["estimate"]["box_size"]
-    order_id = params["id"]
-
-    Package.create(weight: weight, sizing: sizing, order_id: order_id)
-
-
-
+    service_array = params["order"]["estimate"]["service"].split(" ")
+    price = service_array.pop.to_f
+    service_type = service_array.join(" ")
+    weight = params["order"]["estimate"]["service_info"]["estimate"]["total_weight"].to_i
+    @box_size = params["order"]["estimate"]["service_info"]["estimate"]["box_size"]
+    set_box_size
+    order_id = params["id"].to_i
+    Package.create(weight: weight, sizing: @box_size, order_id: order_id, service_type: service_type, price: price)
   end
-
-
 end

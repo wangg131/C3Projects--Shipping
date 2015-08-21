@@ -56,25 +56,11 @@ RSpec.describe PackagesController, type: :controller do
     end
   end
 
-  describe "get carrier quote" do
-
-    it "creates UPS instances" do
-      VCR.use_cassette 'ups' do
-        expect(controller.send(:estimate_request)).to include(ActiveShipping::UPS)
-      end
-    end
-
-    it "creates USPS instances" do
-      VCR.use_cassette'usps' do
-        expect(controller.send(:estimate_request)).to include(ActiveShipping::USPS)
-      end
-    end
-
   describe "packages#save" do
     it "saves a record of the shipping information" do
-      Package.create(weight: 29.5, sizing: "[12, 5, 4]", order_id: 1, service_type: "Bike delivery", price: 674)
-      expect(Package.count).to eq(1)
-      end
+      let(:params) {
+        { zip: "98101", city: "Seattle", state: "WA", country: "US", box_size: "medium", total_weight: 12.0, order_id: 1, price: 789, controller: "packages", action: "save"}
+        }
     end
   end
 end

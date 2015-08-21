@@ -27,7 +27,6 @@ class PackagesController < ApplicationController
     end
 
   def save
-    binding.pry
     service_array = params["order"]["estimate"]["service"].split(" ")
     price = service_array.pop.to_f
     service_type = service_array.join(" ")
@@ -36,6 +35,7 @@ class PackagesController < ApplicationController
     set_box_size
     order_id = params["id"].to_i
     Package.create(weight: weight, sizing: @box_size, order_id: order_id, service_type: service_type, price: price)
+    render nothing: true
   end
 
   private

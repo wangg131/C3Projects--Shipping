@@ -57,10 +57,31 @@ RSpec.describe PackagesController, type: :controller do
   end
 
   describe "packages#save" do
+    let(:params) do
+      {
+      order:
+        {
+        estimate:
+          {
+          service: "USPS Media Mail Parcel 272",
+          service_info:
+            {
+            estimate:
+              {
+              name:"Brenna Leker",
+              email:"brennarama@gmail.com",
+              street:"924 Shorewood Dr",
+              city:"Bremerton",
+              state:"WA",
+              zip:"98312",
+              country:"US",
+              box_size:"medium",
+              total_weight:"12.0"}}}},
+                id:"13"}
+              end
     it "saves a record of the shipping information" do
-      let(:params) {
-        { zip: "98101", city: "Seattle", state: "WA", country: "US", box_size: "medium", total_weight: 12.0, order_id: 1, price: 789, controller: "packages", action: "save"}
-        }
+      post :save, params
+      expect(Package.count).to eq(1)
     end
   end
 end

@@ -65,12 +65,17 @@ RSpec.describe PackagesController, type: :controller do
     end
   end
 
-#   describe "rescue methods" do
-#         # PackagesController.stub(:estimate_request).and_raise(Exception)
-#     it ""
-#     expect(response.response_code).to eq(400)
-#   end
-# end
+  describe "rescue methods" do
+    before do
+      allow(ActiveShipping::USPS).to receive(:new).and_raise(ActiveShipping::ResponseError)
+    end
+    it "" do
+      get :estimate_request
+      expect(response.response_code).to eq(400)
+    end
+  end
+
+
   describe "packages#save" do
     let(:params) do
       {
@@ -93,7 +98,7 @@ RSpec.describe PackagesController, type: :controller do
               box_size:"medium",
               total_weight:"12.0"}}}},
                 id:"13"}
-              end
+    end
     it "saves a record of the shipping information" do
       post :save, params
       expect(Package.count).to eq(1)

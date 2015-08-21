@@ -22,7 +22,7 @@ class PackagesController < ApplicationController
         render json: carrier_rates.as_json
       rescue ActiveShipping::ResponseError => error
        error_json = { message: error.message }
-       render json: error_json.as_json, response_code: 400
+       render json: error_json.as_json, status: 400
       end
     end
 

@@ -1,6 +1,42 @@
 class PackagesController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:save]
 
+  def estimate_request # api endpoint
+    @betsy_shipping = params
+    origin
+    destination
+    package
+
+    ups = ActiveShipping::UPS.new(
+                                :login => ENV["ACTIVESHIPPING_UPS_LOGIN"],
+                                :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
+                                :key => ENV["ACTIVESHIPPING_UPS_KEY"])
+    ups_response = ups.find_rates(@origin, @destination, @package)
+    ups_rates = ups_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
+
+    usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
+    usps_response = usps.find_rates(@origin, @destination, @package)
+    usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
+
+    carrier_rates = []
+    carrier_rates.push(ups_rates, usps_rates)
+    render json: carrier_rates.as_json
+
+  end
+
+  def save
+    service_array = params["order"]["estimate"]["service"].split(" ")
+    price = service_array.pop.to_f
+    service_type = service_array.join(" ")
+    weight = params["order"]["estimate"]["service_info"]["estimate"]["total_weight"].to_i
+    @box_size = params["order"]["estimate"]["service_info"]["estimate"]["box_size"]
+    set_box_size
+    order_id = params["id"].to_i
+    Package.create(weight: weight, sizing: @box_size, order_id: order_id, service_type: service_type, price: price)
+  end
+
+  private
+
   def origin
     @origin = ActiveShipping::Location.new(country: "US",
                                           state: "WA",
@@ -35,37 +71,5 @@ class PackagesController < ApplicationController
     else
       @box_size = [8, 8, 8]
     end
-  end
-  def estimate_request # api endpoint
-    @betsy_shipping = params
-    origin
-    destination
-    package
-
-    ups = ActiveShipping::UPS.new(:login => ENV["ACTIVESHIPPING_UPS_LOGIN"],
-                                  :password => ENV["ACTIVESHIPPING_UPS_PASSWORD"],
-                                  :key => ENV["ACTIVESHIPPING_UPS_KEY"])
-    ups_response = ups.find_rates(@origin, @destination, @package)
-    ups_rates = ups_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
-
-    usps = ActiveShipping::USPS.new(:login => ENV["ACTIVESHIPPING_USPS_LOGIN"])
-    usps_response = usps.find_rates(@origin, @destination, @package)
-    usps_rates = usps_response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
-
-    carrier_rates = []
-    carrier_rates.push(ups_rates, usps_rates)
-    render json: carrier_rates.as_json
-
-  end
-
-  def save
-    service_array = params["order"]["estimate"]["service"].split(" ")
-    price = service_array.pop.to_f
-    service_type = service_array.join(" ")
-    weight = params["order"]["estimate"]["service_info"]["estimate"]["total_weight"].to_i
-    @box_size = params["order"]["estimate"]["service_info"]["estimate"]["box_size"]
-    set_box_size
-    order_id = params["id"].to_i
-    Package.create(weight: weight, sizing: @box_size, order_id: order_id, service_type: service_type, price: price)
   end
 end

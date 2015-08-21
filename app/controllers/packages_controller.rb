@@ -22,7 +22,7 @@ class PackagesController < ApplicationController
         render json: carrier_rates.as_json
       rescue ActiveShipping::ResponseError => error
        error_json = { message: error.message }
-       render json: error_json.as_json, response_code: 400
+       render json: error_json.as_json, status: 400
       end
   end
 
@@ -35,6 +35,7 @@ class PackagesController < ApplicationController
     set_box_size
     order_id = params["id"].to_i
     Package.create(weight: weight, sizing: @box_size, order_id: order_id, service_type: service_type, price: price)
+    render nothing: true
   end
 
   private
